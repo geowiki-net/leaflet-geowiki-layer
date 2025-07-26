@@ -1,6 +1,7 @@
 /* global L:false */
 const styleToLeaflet = require('./styleToLeaflet')
 const pointOnFeature = require('./pointOnFeature')
+const twig = require('twig')
 const strToStyle = require('./strToStyle')
 const isTrue = require('./isTrue')
 
@@ -11,6 +12,11 @@ class SublayerFeature {
     this.sublayer = sublayer
     this.isShown = false
     this.flags = {}
+
+    this.geometry = null
+    this.object.on('update', () => {
+      this.geometry = null
+    })
   }
 
   updateFlags () {
@@ -328,6 +334,13 @@ class SublayerFeature {
       flags: this.flags,
       members: [],
       const: this.sublayer.options.const
+    }
+
+    if (ob.geometry) {
+      if (!this.geometry) {
+        this.geometry = twig.filters.raw(JSON.stringify(ob.GeoJSON().geometry))
+      }
+      result.geometry = this.geometry
     }
 
     if (ob.memberFeatures) {

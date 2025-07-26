@@ -116,6 +116,7 @@ The templates will be rendered when the object becomes visible and when the zoom
 * `sublayer_id` (the id of the sub layer)
 * `type` ('node', 'way' or 'relation')
 * `tags.*` (all tags are available with the prefix `tags.`, e.g. `tags.amenity`)
+* `geometry` (stringified GeoJSON geometry)
 * `meta.timestamp` (timestamp of last modification)
 * `meta.version` (version of the object)
 * `meta.changeset` (ID of the changeset, the object was last modified in)
