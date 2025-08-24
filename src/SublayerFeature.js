@@ -265,7 +265,13 @@ class SublayerFeature {
   evaluate () {
     this.twigData = this.compileTwigData()
 
+    global.twigContext = {
+      currentMapFeature: this,
+    }
+
+    // deprecate global.currentMapFeature -> use global.twigContext.currentMapFeature instead
     global.currentMapFeature = this
+
     const objectData = {}
     for (const k in this.sublayer.options.feature) {
       if (typeof this.sublayer.options.feature[k] === 'function') {
@@ -275,6 +281,7 @@ class SublayerFeature {
       }
     }
     delete global.currentMapFeature
+    delete global.twigContext
 
     const styleIds = []
     for (const k in objectData) {
