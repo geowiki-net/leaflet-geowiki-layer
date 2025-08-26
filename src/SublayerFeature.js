@@ -281,12 +281,14 @@ class SublayerFeature {
         objectData[k] = this.sublayer.options.feature[k]
       }
     }
-    delete global.currentMapFeature
 
-    if (global.twigContext.reloadPromises.length) {
-      Promise.allSettled(global.twigContext.reloadPromises).then(() => this.recalc())
-    }
+    const reloadPromises = global.twigContext.reloadPromises
     delete global.twigContext
+    delete global.currentMapFeature // TODO: deprecated
+
+    if (reloadPromises.length) {
+      Promise.allSettled(reloadPromises).then(() => this.recalc())
+    }
 
     const styleIds = []
     for (const k in objectData) {
