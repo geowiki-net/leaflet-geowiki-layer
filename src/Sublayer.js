@@ -1,6 +1,6 @@
 /* eslint-disable new-cap */
 const ee = require('event-emitter')
-const OverpassFrontend = require('overpass-frontend')
+const GeowikiAPI = require('@geowiki-net/geowiki-api')
 const nearestPointOnGeometry = require('nearest-point-on-geometry')
 const BoundingBox = require('boundingbox')
 
@@ -90,12 +90,12 @@ class Sublayer {
 
         // check if referenced object is loaded - if not, request load
         const ofOptions = {
-          properties: OverpassFrontend.ALL
+          properties: GeowikiAPI.ALL
         }
-        const subObject = this.master.overpassFrontend.getCached(id, ofOptions)
+        const subObject = this.master.geowikiAPI.getCached(id, ofOptions)
 
         if (!subObject) {
-          this.master.overpassFrontend.get(id, ofOptions,
+          this.master.geowikiAPI.get(id, ofOptions,
             () => {},
             () => {}
           )
@@ -239,7 +239,7 @@ class Sublayer {
 
   /**
    * Hide all objects which do not satisfy the filter
-   * @param {OverpassFrontend.Filter} filter A filter, e.g. new OverpassFrontend.Filter('nwr[amenity=restaurant]')
+   * @param {GeowikiAPI.Filter} filter A filter, e.g. new GeowikiAPI.Filter('nwr[amenity=restaurant]')
    */
   hideNonVisibleFilter (filter) {
     for (const k in this.visibleFeatures) {
@@ -383,7 +383,7 @@ class Sublayer {
     }
 
     options.priority = -1
-    options.properties = OverpassFrontend.ALL
+    options.properties = GeowikiAPI.ALL
 
     if (typeof data === 'string') {
       result.request = this.get(data, options, (err, _data) => {

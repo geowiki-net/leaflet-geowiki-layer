@@ -46,7 +46,7 @@ var mapCenter = [ 51.503, -0.093 ]
 
 window.onload = function() {
   map = L.map('map').setView(mapCenter, 17)
-  overpassFrontend = new OverpassFrontend(overpassURL, {
+  geowikiAPI = new GeowikiAPI(overpassURL, {
     timeGap: 10,
     effortPerRequest: 100
   })
