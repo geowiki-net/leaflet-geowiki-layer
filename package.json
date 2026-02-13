@@ -1,7 +1,7 @@
 {
-  "name": "overpass-layer",
-  "version": "3.6.0",
-  "description": "Show a Leaflet layer using OpenStreetMap data from Overpass API via OverpassFrontend.",
+  "name": "@geowiki-net/leaflet-geowiki-layer",
+  "version": "4.0.0-devel",
+  "description": "Show a Leaflet layer from Geowiki API.",
   "dependencies": {
     "@geowiki-net/geowiki-api": "^4.0.0-beta.2",
     "@turf/along": "^6.5.0",
