@@ -1,5 +1,5 @@
 const isTrue = require('./isTrue')
-const parseLength = require('./parseLength')
+const geoFunctions = require('@geowiki-net/geowiki-lib-geo-functions')
 
 const transforms = {
   stroke: {
@@ -116,13 +116,13 @@ function styleToLeaflet (style, twigData) {
           break
         case 'length':
           if (twigData && twigData.map) {
-            value = parseLength(ret[k], twigData.map.metersPerPixel)
+            value = geoFunctions.parseLength(ret[k], twigData.map)
           } else {
             value = parseFloat(ret[k])
           }
           break
         case 'multiple-length':
-          value = ret[k].split(/,/g).map(v => parseLength(v, twigData.map.metersPerPixel)).join(',')
+          value = ret[k].split(/,/g).map(v => parseLength(v, twigData.map)).join(',')
       }
 
       if (transform.rename) {

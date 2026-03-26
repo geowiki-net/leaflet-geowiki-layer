@@ -5,6 +5,7 @@ const ee = require('event-emitter')
 const BoundingBox = require('boundingbox')
 const twig = require('twig')
 const GeowikiAPI = require('@geowiki-net/geowiki-api')
+const geoFunctions = require('@geowiki-net/geowiki-lib-geo-functions')
 const escapeHtml = require('html-escape')
 const turf = {
   intersect: require('@turf/intersect').default
@@ -162,13 +163,14 @@ class OverpassLayer {
   }
 
   calcGlobalTwigData () {
+    const center = this.map.getCenter()
     this.globalTwigData = {
       map: {
         zoom: this.map.getZoom(),
-        // from: https://stackoverflow.com/a/31266377
-        metersPerPixel: 40075016.686 * Math.abs(Math.cos(this.map.getCenter().lat / 180 * Math.PI)) / Math.pow(2, this.map.getZoom() + 8)
+        center: { lat: center.lat, lon: center.lng }
       }
     }
+    geoFunctions.metersPerPixel(this.globalTwigData.map)
 
     this.emit('globalTwigData', this.globalTwigData)
   }

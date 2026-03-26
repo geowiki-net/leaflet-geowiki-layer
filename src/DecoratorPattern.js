@@ -2,7 +2,7 @@
 
 const isTrue = require('./isTrue')
 const styleToLeaflet = require('./styleToLeaflet')
-const parseLength = require('./parseLength')
+const geoFunctions = require('@geowiki-net/geowiki-lib-geo-functions')
 
 class DecoratorPattern {
   constructor (layer) {
@@ -24,7 +24,7 @@ class DecoratorPattern {
       case 'offset':
       case 'endOffset':
       case 'lineOffset':
-        return parseLength(value, twigData.map.metersPerPixel)
+        return geoFunctions.parseLength(value, twigData.map)
       case 'angleCorrection':
       case 'headAngle':
         return parseFloat(value)
