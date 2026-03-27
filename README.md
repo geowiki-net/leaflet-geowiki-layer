@@ -135,6 +135,8 @@ The templates will be rendered when the object becomes visible and when the zoom
 * `masters[].sequence`: current object is nth member
 * `masters[].role`: current object has role
 * `map.zoom`: Current zoom level
+* `map.center.lat`: Latitude of the view center
+* `map.center.lon`: Longitude of the view center
 * `map.metersPerPixel`: size of a pixel at the map center
 * `const.*` (Values from the 'const' option)
 
