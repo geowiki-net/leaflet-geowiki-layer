@@ -122,7 +122,7 @@ function styleToLeaflet (style, twigData) {
           }
           break
         case 'multiple-length':
-          value = ret[k].split(/,/g).map(v => parseLength(v, twigData.map)).join(',')
+          value = ret[k].split(/,/g).map(v => geoFunctions.parseLength(v, twigData.map)).join(',')
       }
 
       if (transform.rename) {
