@@ -1,3 +1,4 @@
+/* global Sanitizer */
 /* eslint camelcase: 0 */
 require('./OverpassLayer.css')
 
@@ -7,6 +8,7 @@ const twig = require('twig')
 const GeowikiAPI = require('@geowiki-net/geowiki-api')
 const geoFunctions = require('@geowiki-net/geowiki-lib-geo-functions')
 const escapeHtml = require('html-escape')
+const sanitizer = new Sanitizer()
 const turf = {
   intersect: require('@turf/intersect').default
 }
@@ -183,7 +185,6 @@ class OverpassLayer {
    * containing the attribution.
    */
   setAttribution (attribution = null) {
-    // TODO: sanitize HTML string
     // TODO: in GeowikiAPI provide a getAttribution() function
     if (attribution === null) {
       if (this.geowikiAPI.options.attribution || this.geowikiAPI.meta) {
@@ -193,7 +194,9 @@ class OverpassLayer {
       }
     }
 
-    this.options.attribution = attribution
+    const dom = document.createElement('p')
+    dom.setHTML(attribution, sanitizer)
+    this.options.attribution = dom.innerHTML
 
     if (this.options.attribution) {
       this.hideAll()
