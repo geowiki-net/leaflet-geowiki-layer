@@ -194,6 +194,11 @@ class OverpassLayer {
     }
 
     this.options.attribution = attribution
+
+    if (this.options.attribution) {
+      this.hideAll()
+      this.check_update_map()
+    }
   }
 
   check_update_map () {
