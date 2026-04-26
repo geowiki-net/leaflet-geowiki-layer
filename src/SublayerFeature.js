@@ -14,9 +14,12 @@ class SublayerFeature {
     this.flags = {}
 
     this.geometry = null
-    this.object.on('update', () => {
-      this.geometry = null
-    })
+
+    if (this.object && this.object.on) {
+      this.object.on('update', () => {
+        this.geometry = null
+      })
+    }
   }
 
   updateFlags () {
