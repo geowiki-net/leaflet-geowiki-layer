@@ -1,4 +1,5 @@
 /* global L:false */
+const DOMPurify = require('dompurify')
 const styleToLeaflet = require('./styleToLeaflet')
 const pointOnFeature = require('./pointOnFeature')
 const twig = require('twig')
@@ -119,7 +120,7 @@ class SublayerFeature {
       objectData.marker.html += objectData.markerSymbol
 
       const div = document.createElement('div')
-      div.innerHTML = objectData.markerSymbol
+      div.innerHTML = DOMPurify.sanitize(objectData.markerSymbol)
 
       if (div.firstChild) {
         const c = div.firstChild
@@ -161,7 +162,7 @@ class SublayerFeature {
     if (objectData.markerSign) {
       const x = objectData.marker.iconAnchor[0] + objectData.marker.signAnchor[0]
       const y = -objectData.marker.iconSize[1] + objectData.marker.iconAnchor[1] + objectData.marker.signAnchor[1]
-      objectData.marker.html += '<div class="sign" style="margin-left: ' + x + 'px; margin-top: ' + y + 'px;">' + objectData.markerSign + '</div>'
+      objectData.marker.html += '<div class="sign" style="margin-left: ' + x + 'px; margin-top: ' + y + 'px;">' + DOMPurify.sanitize(objectData.markerSign) + '</div>'
     }
 
     const exclude = isTrue(objectData.exclude)
@@ -209,6 +210,7 @@ class SublayerFeature {
     }
     this.styles = objectData.styles
 
+
     this.layouts = {}
     for (const k in this.sublayer.options.layouts) {
       if (typeof this.sublayer.options.layouts[k] === 'function') {
@@ -218,7 +220,7 @@ class SublayerFeature {
       }
     }
 
-    const popupContent = this.layouts.popup
+    const popupContent = DOMPurify.sanitize(this.layouts.popup)
 
     if (this.popup) {
       if (this.popup.currentHTML && (popupContent !== null || this.popup.currentHTML !== popupContent)) {
@@ -260,7 +262,8 @@ class SublayerFeature {
   }
 
   _popupOpen (e) {
-    const popupContent = this.layouts.popup
+    const popupContent = DOMPurify.sanitize(this.layouts.popup)
+
     if (popupContent !== null) {
       e.popup.setContent(popupContent)
       e.popup.currentHTML = popupContent
