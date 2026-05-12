@@ -1,4 +1,3 @@
-/* global Sanitizer */
 /* eslint camelcase: 0 */
 require('./OverpassLayer.css')
 
