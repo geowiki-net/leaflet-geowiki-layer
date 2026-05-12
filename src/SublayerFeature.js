@@ -151,7 +151,7 @@ class SublayerFeature {
           objectData.marker.signAnchor[1] = parseFloat(c.getAttribute('signanchory'))
         }
 
-        if (c.hasAttribute('popupanchory')) {
+        if (c.hasAttribute('popupanchorx')) {
           objectData.marker.popupAnchor[0] = parseFloat(c.getAttribute('popupanchorx'))
         }
         if (c.hasAttribute('popupanchory')) {
