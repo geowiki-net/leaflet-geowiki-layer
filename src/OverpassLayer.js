@@ -8,7 +8,7 @@ const twig = require('twig')
 const GeowikiAPI = require('@geowiki-net/geowiki-api')
 const geoFunctions = require('@geowiki-net/geowiki-lib-geo-functions')
 const escapeHtml = require('html-escape')
-const sanitizer = new Sanitizer()
+const DOMPurify = require('dompurify')
 const turf = {
   intersect: require('@turf/intersect').default
 }
@@ -194,9 +194,7 @@ class OverpassLayer {
       }
     }
 
-    const dom = document.createElement('p')
-    dom.setHTML(attribution, sanitizer)
-    this.options.attribution = dom.innerHTML
+    this.options.attribution = DOMPurify.sanitize(attribution)
 
     if (this.options.attribution) {
       this.hideAll()
