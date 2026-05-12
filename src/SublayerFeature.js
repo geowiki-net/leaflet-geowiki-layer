@@ -55,6 +55,7 @@ class SublayerFeature {
     }
 
     const objectData = this.evaluate()
+    this.objectData = objectData
 
     if (!this.feature) {
       this.feature = ob.leafletFeature(Object.assign({
@@ -213,18 +214,9 @@ class SublayerFeature {
     }
     this.styles = objectData.styles
 
-    this.layouts = {}
-    for (const k in this.sublayer.options.layouts) {
-      if (typeof this.sublayer.options.layouts[k] === 'function') {
-        this.layouts[k] = this.sublayer.options.layouts[k]({ object: objectData })
-      } else {
-        this.layouts[k] = this.sublayer.options.layouts[k]
-      }
-    }
-
-    const popupContent = DOMPurify.sanitize(this.layouts.popup)
-
     if (this.popup) {
+      const popupContent = DOMPurify.sanitize(this.renderLayout('popup'))
+
       if (this.popup.currentHTML && (popupContent !== null || this.popup.currentHTML !== popupContent)) {
         this.popup._contentNode.innerHTML = popupContent
         this.popup.currentHTML = popupContent
@@ -263,8 +255,31 @@ class SublayerFeature {
     this.sublayer.emit('update', this.object, this)
   }
 
+  /**
+   * @param {string|string[]} k Layout ID to be rendered. If an array is passed, the first found layout will be rendered.
+   * @return {string|null} Return the result or null of no renderable layout has been found.
+   */
+  renderLayout (k) {
+    if (Array.isArray(k)) {
+      for (let i = 0; i < k.length; i++) {
+        const r = this.renderLayout(k[i])
+        if (r) {
+          return r
+        }
+      }
+
+      return null
+    }
+
+    if (typeof this.sublayer.options.layouts[k] === 'function') {
+      return this.sublayer.options.layouts[k]({ object: this.objectData })
+    }
+
+    return this.sublayer.options.layouts[k]
+  }
+
   _popupOpen (e) {
-    const popupContent = DOMPurify.sanitize(this.layouts.popup)
+    const popupContent = DOMPurify.sanitize(this.renderLayout('popup'))
 
     if (popupContent !== null) {
       e.popup.setContent(popupContent)
