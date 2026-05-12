@@ -120,7 +120,10 @@ class SublayerFeature {
       objectData.marker.html += objectData.markerSymbol
 
       const div = document.createElement('div')
-      div.innerHTML = DOMPurify.sanitize(objectData.markerSymbol)
+      div.innerHTML = DOMPurify.sanitize(objectData.markerSymbol, {
+        USE_PROFILES: { svg: true, svgFilters: true },
+        ADD_ATTR: ['anchorX', 'anchory', 'signanchorx', 'signanchory', 'popupanchorx', 'popupanchory']
+      })
 
       if (div.firstChild) {
         const c = div.firstChild
