@@ -56,6 +56,7 @@ class SublayerFeature {
 
     const objectData = this.evaluate()
     this.objectData = objectData
+    this._objectData = {}
 
     if (!this.feature) {
       this.feature = ob.leafletFeature(Object.assign({
@@ -252,6 +253,30 @@ class SublayerFeature {
 
     this.sublayer.master.emit('update', this.object, this)
     this.sublayer.emit('update', this.object, this)
+  }
+
+  /**
+   * render a property of the 'feature' definition.
+   *
+   * @param {string} key The key of the feature description to be rendered (e.g. 'title').
+   * @return {string|null} Return the result or null of no renderable key has been found.
+   */
+  renderFeatureValue (key) {
+    if (key in this._objectData) {
+      return this._objectData[key]
+    }
+
+    const template = this.sublayer.options.feature[key]
+
+    if (typeof template === 'function') {
+      global.currentMapFeature = this
+      this._objectData[key] = template(this.twigData)
+      delete global.currentMapFeature
+    } else {
+      this._objectData[key] = template
+    }
+
+    return this._objectData[key]
   }
 
   /**
