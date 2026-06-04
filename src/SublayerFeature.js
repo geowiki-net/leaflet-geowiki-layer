@@ -271,7 +271,7 @@ class SublayerFeature {
       this.popup.currentHTML = null
 
       this.feature.bindPopup(this.popup)
-      for (k in this.features) {
+      for (const k in this.features) {
         if (this.sublayer._shallBindPopupToStyle(k)) {
           this.features[k].bindPopup(this.popup)
         }
