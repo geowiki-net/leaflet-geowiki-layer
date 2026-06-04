@@ -182,55 +182,56 @@ class SublayerFeature {
   }
 
   _applyMarker () {
-    const objectData = this.objectData
     const ob = this.object
 
-    objectData.marker = {
+    const marker = {
       html: '',
       iconAnchor: [0, 0],
       iconSize: [0, 0],
       signAnchor: [0, 0],
       popupAnchor: [0, 0]
     }
-    if (objectData.markerSymbol) {
-      objectData.marker.html += objectData.markerSymbol
+
+    const markerSymbol = this.renderFeatureValue('markerSymbol')
+    if (markerSymbol) {
+      marker.html += markerSymbol
 
       const div = document.createElement('div')
-      div.innerHTML = DOMPurify.sanitize(objectData.markerSymbol, {
+      div.innerHTML = DOMPurify.sanitize(markerSymbol, {
         ADD_ATTR: ['anchorx', 'anchory', 'signanchorx', 'signanchory', 'popupanchorx', 'popupanchory']
       })
 
       if (div.firstChild) {
         const c = div.firstChild
 
-        objectData.marker.iconSize = [c.offsetWidth, c.offsetHeight]
+        marker.iconSize = [c.offsetWidth, c.offsetHeight]
         if (c.hasAttribute('width')) {
-          objectData.marker.iconSize[0] = parseFloat(c.getAttribute('width'))
+          marker.iconSize[0] = parseFloat(c.getAttribute('width'))
         }
         if (c.hasAttribute('height')) {
-          objectData.marker.iconSize[1] = parseFloat(c.getAttribute('height'))
+          marker.iconSize[1] = parseFloat(c.getAttribute('height'))
         }
 
-        objectData.marker.iconAnchor = [objectData.marker.iconSize[0] / 2, objectData.marker.iconSize[1] / 2]
+        marker.iconAnchor = [marker.iconSize[0] / 2, marker.iconSize[1] / 2]
         if (c.hasAttribute('anchorx')) {
-          objectData.marker.iconAnchor[0] = parseFloat(c.getAttribute('anchorx'))
+          marker.iconAnchor[0] = parseFloat(c.getAttribute('anchorx'))
         }
         if (c.hasAttribute('anchory')) {
-          objectData.marker.iconAnchor[1] = parseFloat(c.getAttribute('anchory'))
+          marker.iconAnchor[1] = parseFloat(c.getAttribute('anchory'))
         }
 
         if (c.hasAttribute('signanchorx')) {
-          objectData.marker.signAnchor[0] = parseFloat(c.getAttribute('signanchorx'))
+          marker.signAnchor[0] = parseFloat(c.getAttribute('signanchorx'))
         }
         if (c.hasAttribute('signanchory')) {
-          objectData.marker.signAnchor[1] = parseFloat(c.getAttribute('signanchory'))
+          marker.signAnchor[1] = parseFloat(c.getAttribute('signanchory'))
         }
 
         if (c.hasAttribute('popupanchorx')) {
-          objectData.marker.popupAnchor[0] = parseFloat(c.getAttribute('popupanchorx'))
+          marker.popupAnchor[0] = parseFloat(c.getAttribute('popupanchorx'))
         }
         if (c.hasAttribute('popupanchory')) {
-          objectData.marker.popupAnchor[1] = parseFloat(c.getAttribute('popupanchory'))
+          marker.popupAnchor[1] = parseFloat(c.getAttribute('popupanchory'))
         }
       }
 
@@ -238,17 +239,18 @@ class SublayerFeature {
       this.sublayer.updateAssets(div, this.object, this)
     }
 
-    if (objectData.markerSign) {
-      const x = objectData.marker.iconAnchor[0] + objectData.marker.signAnchor[0]
-      const y = -objectData.marker.iconSize[1] + objectData.marker.iconAnchor[1] + objectData.marker.signAnchor[1]
-      objectData.marker.html += '<div class="sign" style="margin-left: ' + x + 'px; margin-top: ' + y + 'px;">' + DOMPurify.sanitize(objectData.markerSign) + '</div>'
+    const markerSign = this.renderFeatureValue('markerSign')
+    if (markerSign) {
+      const x = marker.iconAnchor[0] + marker.signAnchor[0]
+      const y = -marker.iconSize[1] + marker.iconAnchor[1] + marker.signAnchor[1]
+      marker.html += '<div class="sign" style="margin-left: ' + x + 'px; margin-top: ' + y + 'px;">' + DOMPurify.sanitize(markerSign) + '</div>'
     }
 
-    const exclude = isTrue(objectData.exclude)
+    const exclude = isTrue(this.renderFeatureValue('exclude'))
 
-    if (objectData.marker.html) {
-      objectData.marker.className = 'overpass-layer-icon'
-      const icon = L.divIcon(objectData.marker)
+    if (marker.html) {
+      marker.className = 'overpass-layer-icon'
+      const icon = L.divIcon(marker)
 
       if (this.featureMarker) {
         if (exclude) {
