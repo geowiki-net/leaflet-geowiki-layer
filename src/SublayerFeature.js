@@ -258,10 +258,18 @@ class SublayerFeature {
   /**
    * render a property of the 'feature' definition.
    *
-   * @param {string} key The key of the feature description to be rendered (e.g. 'title').
+   * @param {string|string[]} key The key of the feature description to be rendered (e.g. 'title'). If an array is passed, the first found layout will be rendered.
    * @return {string|null} Return the result or null of no renderable key has been found.
    */
   renderFeatureValue (key) {
+    if (Array.isArray(key)) {
+      key = key.find(k => this.sublayer.options.feature[k])
+    }
+
+    if (!key) {
+      return null
+    }
+
     if (key in this._objectData) {
       return this._objectData[key]
     }
