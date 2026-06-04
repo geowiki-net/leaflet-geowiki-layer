@@ -54,6 +54,7 @@ class SublayerFeature {
       })
     }
 
+    // TODO: deprecate objectData, this.objectData, this.data -> replace by .renderFeatureValue()
     const objectData = this.evaluate()
     this.objectData = objectData
     this._objectData = {}
