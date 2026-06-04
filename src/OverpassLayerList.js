@@ -109,8 +109,8 @@ class OverpassLayerList {
       this.dom.appendChild(div)
     }
 
-    // TODO - ob.data is deprecated
-    ob.sublayer.updateAssets(div, ob.data)
+    // TODO - updateAssets changed parameters, update dependents
+    ob.sublayer.updateAssets(div, ob.object, ob)
 
     div.onmouseover = function (id, sublayer_id) {
       if (this.currentHover) {
@@ -169,8 +169,8 @@ class OverpassLayerList {
       div.currentHTML = html
     }
 
-    // TODO - ob.data is deprecated
-    ob.sublayer.updateAssets(div, ob.data)
+    // TODO - updateAssets changed parameters, update dependents
+    ob.sublayer.updateAssets(div, ob.object, ob)
   }
 
   delObject (ob) {

@@ -161,7 +161,8 @@ class SublayerFeature {
         }
       }
 
-      this.sublayer.updateAssets(div, objectData)
+      // TODO - updateAssets changed parameters, update dependents
+      this.sublayer.updateAssets(div, this.object, this)
     }
 
     if (objectData.markerSign) {
@@ -185,7 +186,8 @@ class SublayerFeature {
 
         this.featureMarker.setIcon(icon)
         if (this.featureMarker._icon) {
-          this.sublayer.updateAssets(this.featureMarker._icon)
+          // TODO - updateAssets changed parameters, update dependents
+          this.sublayer.updateAssets(this.featureMarker._icon, this.object, this)
         }
       } else {
         if (!this.pointOnFeature) {
@@ -221,7 +223,8 @@ class SublayerFeature {
       if (this.popup.currentHTML && (popupContent !== null || this.popup.currentHTML !== popupContent)) {
         this.popup._contentNode.innerHTML = popupContent
         this.popup.currentHTML = popupContent
-        this.sublayer.updateAssets(this.popup._contentNode, objectData)
+        // TODO - updateAssets changed parameters, update dependents
+        this.sublayer.updateAssets(this.popup._contentNode, this.object, this)
       }
     } else {
       this.popup = L.popup()
@@ -454,7 +457,8 @@ class SublayerFeature {
 
     if (this.featureMarker && !isTrue(this.data.exclude)) {
       this.featureMarker.addTo(this.map)
-      this.sublayer.updateAssets(this.featureMarker._icon)
+      // TODO - updateAssets changed parameters, update dependents
+      this.sublayer.updateAssets(this.featureMarker._icon, this.object, this)
     }
 
     this.object.on('update', this.sublayer.scheduleReprocess.bind(this.sublayer, this.id))
