@@ -71,40 +71,9 @@ class SublayerFeature {
 
     for (k in objectData) {
       const m = k.match(/^style(|:(.*))$/)
+
       if (m) {
-        const styleId = typeof m[2] === 'undefined' ? 'default' : m[2]
-        const style = styleToLeaflet(objectData[k], this.sublayer.master.globalTwigData)
-
-        if (!('attribution' in style)) {
-          style.attribution = this.sublayer.options.attribution
-        }
-
-        if (this.features[styleId]) {
-          this.features[styleId].setStyle(style)
-        } else {
-          this.features[styleId] = ob.leafletFeature(Object.assign(style, leafletFeatureOptions))
-        }
-
-        if ('text' in style && 'setText' in this.features[styleId]) {
-          this.features[styleId].setText(null)
-          this.features[styleId].setText(style.text, {
-            repeat: style.textRepeat,
-            center: style.textCenter,
-            offset: style.textOffset,
-            below: style.textBelow,
-            attributes: {
-              fill: style.textFill,
-              'fill-opacity': style.textFillOpacity,
-              'font-weight': style.textFontWeight,
-              'font-size': style.textFontSize,
-              'letter-spacing': style.textLetterSpacing
-            }
-          })
-        }
-
-        if ('offset' in style && 'setOffset' in this.features[styleId]) {
-          this.features[styleId].setOffset(style.offset)
-        }
+        this._applyFeature(k, objectData[k], leafletFeatureOptions)
       }
     }
 
@@ -257,6 +226,42 @@ class SublayerFeature {
 
     this.sublayer.master.emit('update', this.object, this)
     this.sublayer.emit('update', this.object, this)
+  }
+
+  _applyFeature (k, objectDataK, leafletFeatureOptions) {
+    const styleId = k === 'style' ? 'default' : k.substr(6)
+    const style = styleToLeaflet(objectDataK, this.sublayer.master.globalTwigData)
+
+    if (!('attribution' in style)) {
+      style.attribution = this.sublayer.options.attribution
+    }
+
+    if (this.features[styleId]) {
+      this.features[styleId].setStyle(style)
+    } else {
+      this.features[styleId] = this.object.leafletFeature(Object.assign(style, leafletFeatureOptions))
+    }
+
+    if ('text' in style && 'setText' in this.features[styleId]) {
+      this.features[styleId].setText(null)
+      this.features[styleId].setText(style.text, {
+        repeat: style.textRepeat,
+        center: style.textCenter,
+        offset: style.textOffset,
+        below: style.textBelow,
+        attributes: {
+          fill: style.textFill,
+          'fill-opacity': style.textFillOpacity,
+          'font-weight': style.textFontWeight,
+          'font-size': style.textFontSize,
+          'letter-spacing': style.textLetterSpacing
+        }
+      })
+    }
+
+    if ('offset' in style && 'setOffset' in this.features[styleId]) {
+      this.features[styleId].setOffset(style.offset)
+    }
   }
 
   /**
