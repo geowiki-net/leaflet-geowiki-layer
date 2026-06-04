@@ -303,8 +303,17 @@ class SublayerFeature {
       return null
     }
 
+    const handler = {
+      get (target, prop, receiver) {
+        if (prop.match(/^get/)) {
+          const key = prop[3].toLowerCase() + prop.substr(4)
+          return target.renderFeatureValue(key)
+        }
+      }
+    }
+
     if (typeof this.sublayer.options.layouts[k] === 'function') {
-      return this.sublayer.options.layouts[k]({ object: this.objectData })
+      return this.sublayer.options.layouts[k]({ object: new Proxy(this, handler) })
     }
 
     return this.sublayer.options.layouts[k]
