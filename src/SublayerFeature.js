@@ -69,10 +69,6 @@ class SublayerFeature {
       }, this.leafletFeatureOptions))
     }
 
-    if ('styles' in showOptions) {
-      objectData.styles = objectData.styles.concat(showOptions.styles)
-    }
-
     objectData.marker = {
       html: '',
       iconAnchor: [0, 0],
@@ -161,26 +157,35 @@ class SublayerFeature {
       }
     }
 
+    let styles = this.renderFeatureValue('styles')
+    if (!styles) {
+      styles = 'styles' in this.sublayer.options ? this.sublayer.options.styles : this.sublayer.autoStyles
+    }
+
+    if ('styles' in showOptions) {
+      styles = styles.concat(showOptions.styles)
+    }
+
     if (exclude) {
-      objectData.styles = []
+      styles = []
     }
 
     if (this.isShown) {
       this.feature.addTo(this.sublayer.map)
 
-      objectData.styles.forEach(styleId => {
+      styles.forEach(styleId => {
         const k = styleId === 'default' ? 'style' : ('style:' + styleId)
         this._applyFeature(k)
         this.features[styleId].addTo(this.sublayer.map)
       })
 
       for (k in this.features) {
-        if (objectData.styles && objectData.styles.indexOf(k) === -1 && this.styles && this.styles.indexOf(k) !== -1) {
+        if (styles && styles.indexOf(k) === -1 && this.styles && this.styles.indexOf(k) !== -1) {
           this.sublayer.map.removeLayer(this.features[k])
         }
       }
     }
-    this.styles = objectData.styles
+    this.styles = styles
 
     if (this.popup) {
       const popupContent = DOMPurify.sanitize(this.renderLayout('popup'))
@@ -371,21 +376,6 @@ class SublayerFeature {
 
     if (!('features' in this)) {
       this.features = {}
-    }
-
-    objectData.styles =
-      'styles' in objectData
-        ? objectData.styles
-        : 'styles' in this.sublayer.options
-          ? this.sublayer.options.styles
-          : styleIds
-    if (typeof objectData.styles === 'string' || 'twig_markup' in objectData.styles) {
-      const styles = objectData.styles.trim()
-      if (styles === '') {
-        objectData.styles = []
-      } else {
-        objectData.styles = styles.split(/,/).map(style => style.trim())
-      }
     }
 
     return objectData

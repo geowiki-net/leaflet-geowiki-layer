@@ -46,6 +46,18 @@ class Sublayer {
       options.stylesNoAutoShow = ['hover']
     }
 
+    this.autoStyles = []
+    for (const k in this.options.feature) {
+      const m = k.match(/^style(|:(.*))$/)
+      if (m) {
+        const styleId = typeof m[2] === 'undefined' ? 'default' : m[2]
+
+        if (this.options.stylesNoAutoShow.indexOf(styleId) === -1 && !this.autoStyles.includes(styleId)) {
+          this.autoStyles.push(styleId)
+        }
+      }
+    }
+
     decorators.forEach(Ext => new Ext(this))
   }
 
