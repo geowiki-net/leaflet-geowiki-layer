@@ -170,7 +170,7 @@ class SublayerFeature {
 
       objectData.styles.forEach(styleId => {
         const k = styleId === 'default' ? 'style' : ('style:' + styleId)
-        this._applyFeature(k, objectData[k])
+        this._applyFeature(k)
         this.features[styleId].addTo(this.sublayer.map)
       })
 
@@ -224,9 +224,10 @@ class SublayerFeature {
     this.sublayer.emit('update', this.object, this)
   }
 
-  _applyFeature (k, objectDataK) {
+  _applyFeature (k) {
     const styleId = k === 'style' ? 'default' : k.substr(6)
-    const style = styleToLeaflet(objectDataK, this.sublayer.master.globalTwigData)
+    const data = this.renderFeatureValue(styleId === 'default' ? ['style:default', 'style'] : k)
+    const style = styleToLeaflet(data, this.sublayer.master.globalTwigData)
 
     if (!('attribution' in style)) {
       style.attribution = this.sublayer.options.attribution
@@ -452,7 +453,7 @@ class SublayerFeature {
 
     this.styles.forEach(styleId => {
       const k = styleId === 'default' ? 'style' : ('style:' + styleId)
-      this._applyFeature(k, this.objectData[k])
+      this._applyFeature(k)
       this.features[styleId].addTo(this.map)
     })
 
