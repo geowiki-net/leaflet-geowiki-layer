@@ -42,7 +42,7 @@ class SublayerFeature {
     const showOptions = {
       styles: []
     }
-    const leafletFeatureOptions = {
+    this.leafletFeatureOptions = {
       shiftWorld: this.sublayer.master.getShiftWorld()
     }
 
@@ -66,15 +66,7 @@ class SublayerFeature {
         fillOpacity: 0,
         interactive: false,
         radius: 0
-      }, leafletFeatureOptions))
-    }
-
-    for (k in objectData) {
-      const m = k.match(/^style(|:(.*))$/)
-
-      if (m) {
-        this._applyFeature(k, objectData[k], leafletFeatureOptions)
-      }
+      }, this.leafletFeatureOptions))
     }
 
     if ('styles' in showOptions) {
@@ -160,7 +152,7 @@ class SublayerFeature {
         }
       } else {
         if (!this.pointOnFeature) {
-          this.pointOnFeature = pointOnFeature(ob, leafletFeatureOptions)
+          this.pointOnFeature = pointOnFeature(ob, this.leafletFeatureOptions)
         }
 
         if (this.pointOnFeature) {
@@ -175,10 +167,14 @@ class SublayerFeature {
 
     if (this.isShown) {
       this.feature.addTo(this.sublayer.map)
+
+      objectData.styles.forEach(styleId => {
+        const k = styleId === 'default' ? 'style' : ('style:' + styleId)
+        this._applyFeature(k, objectData[k])
+        this.features[styleId].addTo(this.sublayer.map)
+      })
+
       for (k in this.features) {
-        if (objectData.styles && objectData.styles.indexOf(k) !== -1 && this.styles && this.styles.indexOf(k) === -1) {
-          this.features[k].addTo(this.sublayer.map)
-        }
         if (objectData.styles && objectData.styles.indexOf(k) === -1 && this.styles && this.styles.indexOf(k) !== -1) {
           this.sublayer.map.removeLayer(this.features[k])
         }
@@ -228,7 +224,7 @@ class SublayerFeature {
     this.sublayer.emit('update', this.object, this)
   }
 
-  _applyFeature (k, objectDataK, leafletFeatureOptions) {
+  _applyFeature (k, objectDataK) {
     const styleId = k === 'style' ? 'default' : k.substr(6)
     const style = styleToLeaflet(objectDataK, this.sublayer.master.globalTwigData)
 
@@ -239,7 +235,7 @@ class SublayerFeature {
     if (this.features[styleId]) {
       this.features[styleId].setStyle(style)
     } else {
-      this.features[styleId] = this.object.leafletFeature(Object.assign(style, leafletFeatureOptions))
+      this.features[styleId] = this.object.leafletFeature(Object.assign(style, this.leafletFeatureOptions))
     }
 
     if ('text' in style && 'setText' in this.features[styleId]) {
@@ -453,14 +449,14 @@ class SublayerFeature {
     this.map = this.sublayer.map
 
     this.feature.addTo(this.map)
-    for (let i = 0; i < this.styles.length; i++) {
-      const k = this.styles[i]
-      if (k in this.features) {
-        this.features[k].addTo(this.map)
-      }
-    }
 
-    if (this.featureMarker && !isTrue(this.data.exclude)) {
+    this.styles.forEach(styleId => {
+      const k = styleId === 'default' ? 'style' : ('style:' + styleId)
+      this._applyFeature(k, this.objectData[k])
+      this.features[styleId].addTo(this.map)
+    })
+
+    if (this.featureMarker && !isTrue(this.renderFeatureValue('exclude'))) {
       this.featureMarker.addTo(this.map)
       // TODO - updateAssets changed parameters, update dependents
       this.sublayer.updateAssets(this.featureMarker._icon, this.object, this)
