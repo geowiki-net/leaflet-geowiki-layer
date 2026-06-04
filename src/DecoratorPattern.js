@@ -39,7 +39,7 @@ class DecoratorPattern {
     }
 
     for (const k in data.features) {
-      const def = k === 'default' ? data.data.style : data.data['style:' + k]
+      const def = data.renderFeatureValue(k === 'default' ? 'style' : 'style:' + k)
 
       if (data.styles.includes(k)) {
         const patternTypes = {}
