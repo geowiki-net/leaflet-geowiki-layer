@@ -69,93 +69,7 @@ class SublayerFeature {
       }, this.leafletFeatureOptions))
     }
 
-    objectData.marker = {
-      html: '',
-      iconAnchor: [0, 0],
-      iconSize: [0, 0],
-      signAnchor: [0, 0],
-      popupAnchor: [0, 0]
-    }
-    if (objectData.markerSymbol) {
-      objectData.marker.html += objectData.markerSymbol
-
-      const div = document.createElement('div')
-      div.innerHTML = DOMPurify.sanitize(objectData.markerSymbol, {
-        ADD_ATTR: ['anchorx', 'anchory', 'signanchorx', 'signanchory', 'popupanchorx', 'popupanchory']
-      })
-
-      if (div.firstChild) {
-        const c = div.firstChild
-
-        objectData.marker.iconSize = [c.offsetWidth, c.offsetHeight]
-        if (c.hasAttribute('width')) {
-          objectData.marker.iconSize[0] = parseFloat(c.getAttribute('width'))
-        }
-        if (c.hasAttribute('height')) {
-          objectData.marker.iconSize[1] = parseFloat(c.getAttribute('height'))
-        }
-
-        objectData.marker.iconAnchor = [objectData.marker.iconSize[0] / 2, objectData.marker.iconSize[1] / 2]
-        if (c.hasAttribute('anchorx')) {
-          objectData.marker.iconAnchor[0] = parseFloat(c.getAttribute('anchorx'))
-        }
-        if (c.hasAttribute('anchory')) {
-          objectData.marker.iconAnchor[1] = parseFloat(c.getAttribute('anchory'))
-        }
-
-        if (c.hasAttribute('signanchorx')) {
-          objectData.marker.signAnchor[0] = parseFloat(c.getAttribute('signanchorx'))
-        }
-        if (c.hasAttribute('signanchory')) {
-          objectData.marker.signAnchor[1] = parseFloat(c.getAttribute('signanchory'))
-        }
-
-        if (c.hasAttribute('popupanchorx')) {
-          objectData.marker.popupAnchor[0] = parseFloat(c.getAttribute('popupanchorx'))
-        }
-        if (c.hasAttribute('popupanchory')) {
-          objectData.marker.popupAnchor[1] = parseFloat(c.getAttribute('popupanchory'))
-        }
-      }
-
-      // TODO - updateAssets changed parameters, update dependents
-      this.sublayer.updateAssets(div, this.object, this)
-    }
-
-    if (objectData.markerSign) {
-      const x = objectData.marker.iconAnchor[0] + objectData.marker.signAnchor[0]
-      const y = -objectData.marker.iconSize[1] + objectData.marker.iconAnchor[1] + objectData.marker.signAnchor[1]
-      objectData.marker.html += '<div class="sign" style="margin-left: ' + x + 'px; margin-top: ' + y + 'px;">' + DOMPurify.sanitize(objectData.markerSign) + '</div>'
-    }
-
-    const exclude = isTrue(objectData.exclude)
-
-    if (objectData.marker.html) {
-      objectData.marker.className = 'overpass-layer-icon'
-      const icon = L.divIcon(objectData.marker)
-
-      if (this.featureMarker) {
-        if (exclude) {
-          this.map.removeLayer(this.featureMarker)
-        } else {
-          this.featureMarker.addTo(this.map)
-        }
-
-        this.featureMarker.setIcon(icon)
-        if (this.featureMarker._icon) {
-          // TODO - updateAssets changed parameters, update dependents
-          this.sublayer.updateAssets(this.featureMarker._icon, this.object, this)
-        }
-      } else {
-        if (!this.pointOnFeature) {
-          this.pointOnFeature = pointOnFeature(ob, this.leafletFeatureOptions)
-        }
-
-        if (this.pointOnFeature) {
-          this.featureMarker = L.marker(this.pointOnFeature, { icon: icon })
-        }
-      }
-    }
+    this._applyMarker()
 
     let styles = this.renderFeatureValue('styles')
     if (!styles) {
@@ -166,6 +80,7 @@ class SublayerFeature {
       styles = styles.concat(showOptions.styles)
     }
 
+    const exclude = isTrue(objectData.exclude)
     if (exclude) {
       styles = []
     }
@@ -263,6 +178,98 @@ class SublayerFeature {
 
     if ('offset' in style && 'setOffset' in this.features[styleId]) {
       this.features[styleId].setOffset(style.offset)
+    }
+  }
+
+  _applyMarker () {
+    const objectData = this.objectData
+    const ob = this.object
+
+    objectData.marker = {
+      html: '',
+      iconAnchor: [0, 0],
+      iconSize: [0, 0],
+      signAnchor: [0, 0],
+      popupAnchor: [0, 0]
+    }
+    if (objectData.markerSymbol) {
+      objectData.marker.html += objectData.markerSymbol
+
+      const div = document.createElement('div')
+      div.innerHTML = DOMPurify.sanitize(objectData.markerSymbol, {
+        ADD_ATTR: ['anchorx', 'anchory', 'signanchorx', 'signanchory', 'popupanchorx', 'popupanchory']
+      })
+
+      if (div.firstChild) {
+        const c = div.firstChild
+
+        objectData.marker.iconSize = [c.offsetWidth, c.offsetHeight]
+        if (c.hasAttribute('width')) {
+          objectData.marker.iconSize[0] = parseFloat(c.getAttribute('width'))
+        }
+        if (c.hasAttribute('height')) {
+          objectData.marker.iconSize[1] = parseFloat(c.getAttribute('height'))
+        }
+
+        objectData.marker.iconAnchor = [objectData.marker.iconSize[0] / 2, objectData.marker.iconSize[1] / 2]
+        if (c.hasAttribute('anchorx')) {
+          objectData.marker.iconAnchor[0] = parseFloat(c.getAttribute('anchorx'))
+        }
+        if (c.hasAttribute('anchory')) {
+          objectData.marker.iconAnchor[1] = parseFloat(c.getAttribute('anchory'))
+        }
+
+        if (c.hasAttribute('signanchorx')) {
+          objectData.marker.signAnchor[0] = parseFloat(c.getAttribute('signanchorx'))
+        }
+        if (c.hasAttribute('signanchory')) {
+          objectData.marker.signAnchor[1] = parseFloat(c.getAttribute('signanchory'))
+        }
+
+        if (c.hasAttribute('popupanchorx')) {
+          objectData.marker.popupAnchor[0] = parseFloat(c.getAttribute('popupanchorx'))
+        }
+        if (c.hasAttribute('popupanchory')) {
+          objectData.marker.popupAnchor[1] = parseFloat(c.getAttribute('popupanchory'))
+        }
+      }
+
+      // TODO - updateAssets changed parameters, update dependents
+      this.sublayer.updateAssets(div, this.object, this)
+    }
+
+    if (objectData.markerSign) {
+      const x = objectData.marker.iconAnchor[0] + objectData.marker.signAnchor[0]
+      const y = -objectData.marker.iconSize[1] + objectData.marker.iconAnchor[1] + objectData.marker.signAnchor[1]
+      objectData.marker.html += '<div class="sign" style="margin-left: ' + x + 'px; margin-top: ' + y + 'px;">' + DOMPurify.sanitize(objectData.markerSign) + '</div>'
+    }
+
+    const exclude = isTrue(objectData.exclude)
+
+    if (objectData.marker.html) {
+      objectData.marker.className = 'overpass-layer-icon'
+      const icon = L.divIcon(objectData.marker)
+
+      if (this.featureMarker) {
+        if (exclude) {
+          this.map.removeLayer(this.featureMarker)
+        } else {
+          this.featureMarker.addTo(this.map)
+        }
+
+        this.featureMarker.setIcon(icon)
+        if (this.featureMarker._icon) {
+          this.sublayer.updateAssets(this.featureMarker._icon)
+        }
+      } else {
+        if (!this.pointOnFeature) {
+          this.pointOnFeature = pointOnFeature(ob, this.leafletFeatureOptions)
+        }
+
+        if (this.pointOnFeature) {
+          this.featureMarker = L.marker(this.pointOnFeature, { icon: icon })
+        }
+      }
     }
   }
 
