@@ -73,10 +73,8 @@ class OverpassLayerList {
   addObject (ob) {
     const id = ob.id + ':' + ob.sublayer_id
 
-    const listExclude = isTrue(ob.data[this.options.prefix + 'Exclude']) ||
-      (!(this.options.prefix + 'Exclude' in ob.data) && isTrue(ob.data.exclude))
-
-    if (listExclude) {
+    const listExclude = ob.renderFeatureValue([this.options.prefix + 'Exclude', 'exclude'])
+    if (isTrue(listExclude)) {
       return
     }
 
@@ -98,7 +96,7 @@ class OverpassLayerList {
     div.innerHTML = html
     div.currentHTML = html
 
-    div.priority = 'priority' in ob.data ? parseFloat(ob.data.priority) : 0
+    div.priority = parseFloat(ob.renderFeatureValue('priority')) || 0
 
     let current = this.dom.firstChild
     while (current && current.priority <= div.priority) {
@@ -111,6 +109,7 @@ class OverpassLayerList {
       this.dom.appendChild(div)
     }
 
+    // TODO - ob.data is deprecated
     ob.sublayer.updateAssets(div, ob.data)
 
     div.onmouseover = function (id, sublayer_id) {
@@ -145,8 +144,7 @@ class OverpassLayerList {
   updateObject (ob) {
     const id = ob.id + ':' + ob.sublayer_id
 
-    const listExclude = isTrue(ob.data[this.options.prefix + 'Exclude']) ||
-      (!(this.options.prefix + 'Exclude' in ob.data) && isTrue(ob.data.exclude))
+    const listExclude = ob.renderFeatureValue([this.options.prefix + 'Exclude', 'exclude'])
 
     if (!(id in this.items) && !listExclude) {
       return this.addObject(ob)
@@ -171,6 +169,7 @@ class OverpassLayerList {
       div.currentHTML = html
     }
 
+    // TODO - ob.data is deprecated
     ob.sublayer.updateAssets(div, ob.data)
   }
 
