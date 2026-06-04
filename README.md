@@ -45,6 +45,7 @@ Options:
 * styles: Array of style-id which should be shown. Default: `['default']`. May be overridden by a feature dependant styles array. Can be a comma-separated string.
 * updateAssets: a function which will be called for all map feature specific HTML contexts. It can be used to update URLs of imgs. It will be passed the following parameters: domNode (the node which should be updated), object (OverpassObject), feature (SublayerFeature).
 * feature: an object describing how the feature will be formated resp. styled. Each of the values may be either a function which will be passed an OverpassObject or a string which will be processed with the templating language TwigJS:
+  * pre: a function which will be evaluated first and for each zoom level change. This can be used to set variables, as further templates use the same context.
   * styles: Array of style-id which should be shown. If not set, the value of the parent 'styles' values will be used. Can be a comma-separated string.
   * style: An object or a function or a TwigJS template (string), styling the resulting map feature (see below for a list of available parameters). Style-Id: "default".
     * If an object is used, e.g.: { width: 2, fillColor: 'red' }

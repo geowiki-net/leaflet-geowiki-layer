@@ -58,6 +58,7 @@ class SublayerFeature {
     const objectData = this.evaluate()
     this.objectData = objectData
     this._objectData = {}
+    this.renderFeatureValue('pre')
 
     if (!this.feature) {
       this.feature = ob.leafletFeature(Object.assign({
