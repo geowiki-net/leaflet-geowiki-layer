@@ -120,7 +120,12 @@ class SublayerFeature {
 
   _applyFeature (k) {
     const styleId = k === 'style' ? 'default' : k.substr(6)
-    const data = this.renderFeatureValue(styleId === 'default' ? ['style:default', 'style'] : k)
+    let data = this.renderFeatureValue(styleId === 'default' ? ['style:default', 'style'] : k)
+
+    if (typeof data === 'string' || 'twig_markup' in data) {
+      data = strToStyle(data)
+    }
+
     const style = styleToLeaflet(data, this.sublayer.master.globalTwigData)
 
     if (!('attribution' in style)) {
