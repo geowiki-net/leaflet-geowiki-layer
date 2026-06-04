@@ -102,34 +102,7 @@ class SublayerFeature {
     }
     this.styles = styles
 
-    if (this.popup) {
-      const popupContent = DOMPurify.sanitize(this.renderLayout('popup'))
-
-      if (this.popup.currentHTML && (popupContent !== null || this.popup.currentHTML !== popupContent)) {
-        this.popup._contentNode.innerHTML = popupContent
-        this.popup.currentHTML = popupContent
-        // TODO - updateAssets changed parameters, update dependents
-        this.sublayer.updateAssets(this.popup._contentNode, this.object, this)
-      }
-    } else {
-      this.popup = L.popup()
-      this.popup.object = this
-      this.popup.sublayer = this.sublayer
-
-      // do not set content here, but later, when _popupOpen gets called
-      this.popup.currentHTML = null
-
-      this.feature.bindPopup(this.popup)
-      for (k in this.features) {
-        if (this.sublayer._shallBindPopupToStyle(k)) {
-          this.features[k].bindPopup(this.popup)
-        }
-      }
-
-      if (this.featureMarker) {
-        this.featureMarker.bindPopup(this.popup)
-      }
-    }
+    this._applyPopup()
 
     this.id = ob.id
     this.layer_id = this.sublayer.options.id
@@ -271,6 +244,37 @@ class SublayerFeature {
         if (this.pointOnFeature) {
           this.featureMarker = L.marker(this.pointOnFeature, { icon: icon })
         }
+      }
+    }
+  }
+
+  _applyPopup () {
+    if (this.popup) {
+      const popupContent = DOMPurify.sanitize(this.renderLayout('popup'))
+
+      if (this.popup.currentHTML && (popupContent !== null || this.popup.currentHTML !== popupContent)) {
+        this.popup._contentNode.innerHTML = popupContent
+        this.popup.currentHTML = popupContent
+        // TODO - updateAssets changed parameters, update dependents
+        this.sublayer.updateAssets(this.popup._contentNode, this.object, this)
+      }
+    } else {
+      this.popup = L.popup()
+      this.popup.object = this
+      this.popup.sublayer = this.sublayer
+
+      // do not set content here, but later, when _popupOpen gets called
+      this.popup.currentHTML = null
+
+      this.feature.bindPopup(this.popup)
+      for (k in this.features) {
+        if (this.sublayer._shallBindPopupToStyle(k)) {
+          this.features[k].bindPopup(this.popup)
+        }
+      }
+
+      if (this.featureMarker) {
+        this.featureMarker.bindPopup(this.popup)
       }
     }
   }
