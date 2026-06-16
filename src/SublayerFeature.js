@@ -5,62 +5,22 @@ const pointOnFeature = require('./pointOnFeature')
 const twig = require('twig')
 const strToStyle = require('./strToStyle')
 const isTrue = require('./isTrue')
+const _SublayerFeature = require('@geowiki-net/geowiki-layer/src/SublayerFeature')
 
-class SublayerFeature {
+class SublayerFeature extends _SublayerFeature {
   constructor (object, sublayer) {
-    this.object = object
-    this.id = object.id
-    this.sublayer = sublayer
-    this.isShown = false
-    this.flags = {}
-    this.features = {}
-
-    this.geometry = null
-
-    if (this.object && this.object.on) {
-      this.object.on('update', () => {
-        this.geometry = null
-      })
-    }
-  }
-
-  updateFlags () {
-    const shownFeatureOptions = this.sublayer.shownFeatureOptions[this.id]
-
-    this.flags = {}
-    shownFeatureOptions.forEach(options => {
-      if (options.flags) {
-        options.flags.forEach(flag => {
-          this.flags[flag] = true
-        })
-      }
-    })
+    super(object, sublayer)
   }
 
   processObject () {
-    let k
-    const ob = this.object
-    const showOptions = {
-      styles: []
-    }
     this.leafletFeatureOptions = {
       shiftWorld: this.sublayer.master.getShiftWorld()
     }
 
-    if (ob.id in this.sublayer.shownFeatureOptions) {
-      this.sublayer.shownFeatureOptions[ob.id].forEach(function (opt) {
-        if ('styles' in opt) {
-          showOptions.styles = showOptions.styles.concat(opt.styles)
-        }
-      })
-    }
-
-    this.twigData = this.compileTwigData()
-    this._objectData = {}
-    this.renderFeatureValue('pre')
+    super.processObject()
 
     if (!this.feature) {
-      this.feature = ob.leafletFeature(Object.assign({
+      this.feature = this.object.leafletFeature(Object.assign({
         weight: 0,
         opacity: 0,
         fillOpacity: 0,
@@ -71,55 +31,16 @@ class SublayerFeature {
 
     this._applyMarker()
 
-    let styles = this.renderFeatureValue('styles')
-    if (!styles) {
-      styles = 'styles' in this.sublayer.options ? this.sublayer.options.styles : this.sublayer.autoStyles
-    }
-
-    if ('styles' in showOptions) {
-      styles = styles.concat(showOptions.styles)
-    }
-
-    const exclude = isTrue(this.renderFeatureValue('exclude'))
-    if (exclude) {
-      styles = []
-    }
-
     if (this.isShown) {
       this.feature.addTo(this.sublayer.map)
 
-      styles.forEach(styleId => {
-        const k = styleId === 'default' ? 'style' : ('style:' + styleId)
-        this._applyFeature(k)
-        this.features[styleId].addTo(this.sublayer.map)
+      Object.entries(this.getStyles()).forEach(([styleId, style]) => {
+        this._applyFeature(styleId, style)
       })
-
-      for (k in this.features) {
-        if (styles && styles.indexOf(k) === -1 && this.styles && this.styles.indexOf(k) !== -1) {
-          this.sublayer.map.removeLayer(this.features[k])
-        }
-      }
     }
-    this.styles = styles
-
-    this._applyPopup()
-
-    this.id = ob.id
-    this.layer_id = this.sublayer.options.id
-    this.sublayer_id = this.sublayer.options.sublayer_id
-
-    if (this.sublayer.master.onUpdate) {
-      this.sublayer.master.onUpdate(this)
-    }
-
-    this.sublayer.master.emit('update', this.object, this)
-    this.sublayer.emit('update', this.object, this)
   }
 
-  _applyFeature (k) {
-    const styleId = k === 'style' ? 'default' : k.substr(6)
-    let data = this.renderFeatureValue(styleId === 'default' ? ['style:default', 'style'] : k)
-
+  _applyFeature (styleId, data) {
     if (typeof data === 'string' || 'twig_markup' in data) {
       data = strToStyle(data)
     }
@@ -420,9 +341,9 @@ class SublayerFeature {
 
     this.feature.addTo(this.map)
 
-    this.styles.forEach(styleId => {
-      const k = styleId === 'default' ? 'style' : ('style:' + styleId)
-      this._applyFeature(k)
+    Object.entries(this.getStyles()).forEach(([styleId, style]) => {
+      console.log(styleId, style)
+      this._applyFeature(styleId, style)
       this.features[styleId].addTo(this.map)
     })
 
