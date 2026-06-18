@@ -4,6 +4,7 @@
   "description": "Show a Leaflet layer from Geowiki API.",
   "dependencies": {
     "@geowiki-net/geowiki-api": "^4.0.0-beta.2",
+    "@geowiki-net/geowiki-layer": "github:geowiki-net/geowiki-layer#renderOnDemand",
     "@geowiki-net/geowiki-lib-geo-functions": "github:geowiki-net/geowiki-lib-geo-functions",
     "@turf/along": "^6.5.0",
     "@turf/intersect": "^6.5.0",
