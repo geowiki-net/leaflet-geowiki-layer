@@ -2,26 +2,12 @@
 require('./OverpassLayer.css')
 
 const BoundingBox = require('boundingbox')
-const twig = require('twig')
-const GeowikiAPI = require('@geowiki-net/geowiki-api')
 const geoFunctions = require('@geowiki-net/geowiki-lib-geo-functions')
-const escapeHtml = require('html-escape')
-const DOMPurify = require('dompurify')
-const turf = {
-  intersect: require('@turf/intersect').default
-}
-
 const GeowikiLayer = require('@geowiki-net/geowiki-layer/src/OverpassLayer')
 const Sublayer = require('./Sublayer')
 const Memberlayer = require('./Memberlayer')
-const compileFeature = require('./compileFeature')
-const compileTemplate = require('./compileTemplate')
 
 class OverpassLayer extends GeowikiLayer {
-  constructor (options) {
-    super(options)
-  }
-
   installClasses () {
     this.classes.Mainlayer = Sublayer
     this.classes.Memberlayer = Memberlayer

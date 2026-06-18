@@ -8,10 +8,6 @@ const isTrue = require('./isTrue')
 const _SublayerFeature = require('@geowiki-net/geowiki-layer/src/SublayerFeature')
 
 class SublayerFeature extends _SublayerFeature {
-  constructor (object, sublayer) {
-    super(object, sublayer)
-  }
-
   processObject () {
     this.leafletFeatureOptions = {
       shiftWorld: this.sublayer.master.getShiftWorld()

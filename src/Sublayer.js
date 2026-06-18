@@ -1,6 +1,4 @@
 /* eslint-disable new-cap */
-const ee = require('event-emitter')
-const GeowikiAPI = require('@geowiki-net/geowiki-api')
 const nearestPointOnGeometry = require('nearest-point-on-geometry')
 const BoundingBox = require('boundingbox')
 
@@ -8,9 +6,9 @@ const _Sublayer = require('@geowiki-net/geowiki-layer/src/Sublayer')
 const SublayerFeature = require('./SublayerFeature')
 
 // Extensions:
-const decorators = [
-  require('./DecoratorPattern')
-]
+// const decorators = [
+//  require('./DecoratorPattern')
+// ]
 
 class Sublayer extends _Sublayer {
   constructor (master, options) {
