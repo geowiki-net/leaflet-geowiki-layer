@@ -4,7 +4,7 @@ const styleToLeaflet = require('./styleToLeaflet')
 const pointOnFeature = require('./pointOnFeature')
 const twig = require('twig')
 const strToStyle = require('./strToStyle')
-const isTrue = require('./isTrue')
+const isTrue = require('@geowiki-net/geowiki-layer/src/isTrue')
 const _SublayerFeature = require('@geowiki-net/geowiki-layer/src/SublayerFeature')
 
 class SublayerFeature extends _SublayerFeature {
