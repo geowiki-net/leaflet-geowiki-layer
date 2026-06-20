@@ -1,4 +1,4 @@
-const isTrue = require('./isTrue')
+const isTrue = require('@geowiki-net/geowiki-layer/src/isTrue')
 const geoFunctions = require('@geowiki-net/geowiki-lib-geo-functions')
 
 const transforms = {

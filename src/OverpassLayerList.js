@@ -3,7 +3,7 @@
 require('./OverpassLayerList.css')
 
 const DOMPurify = require('dompurify')
-const isTrue = require('./isTrue')
+const isTrue = require('@geowiki-net/geowiki-layer/src/isTrue')
 
 class OverpassLayerList {
   constructor (layer, options) {
