@@ -6,14 +6,16 @@ const _Sublayer = require('@geowiki-net/geowiki-layer/src/Sublayer')
 const SublayerFeature = require('./SublayerFeature')
 
 // Extensions:
-// const decorators = [
-//  require('./DecoratorPattern')
-// ]
+const extensions = [
+  require('./DecoratorPattern')
+]
 
 class Sublayer extends _Sublayer {
   constructor (master, options) {
     super(master, options)
     this.featureClass = SublayerFeature
+
+    extensions.forEach(Ext => new Ext(this))
   }
 
   addTo (map) {

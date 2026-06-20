@@ -1,6 +1,6 @@
 /* global L */
 
-const isTrue = require('./isTrue')
+const isTrue = require('@geowiki-net/geowiki-layer/src/isTrue')
 const styleToLeaflet = require('./styleToLeaflet')
 const geoFunctions = require('@geowiki-net/geowiki-lib-geo-functions')
 
