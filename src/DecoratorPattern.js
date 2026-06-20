@@ -38,10 +38,7 @@ class DecoratorPattern {
       data.patternFeatures = {}
     }
 
-    for (const k in data.features) {
-      const def = data.renderFeatureValue(k === 'default' ? 'style' : 'style:' + k)
-
-      if (data.styles.includes(k)) {
+    Object.entries(data.getStyles()).forEach(([styleId, def]) => {
         const patternTypes = {}
         const patternOptions = []
         const symbolOptions = {}
@@ -71,6 +68,7 @@ class DecoratorPattern {
         patternIds.forEach(patternId => {
           let symbol
           const options = patternOptions[patternId]
+        console.log(patternTypes[patternId], options)
 
           switch (patternTypes[patternId]) {
             case 'dash':
@@ -99,23 +97,24 @@ class DecoratorPattern {
           }
         })
 
-        if (!data.patternFeatures[k]) {
-          data.patternFeatures[k] = L.polylineDecorator(data.features[k])
-          data.patternFeatures[k].addTo(this.layer.map)
+        if (!data.patternFeatures[styleId]) {
+          data.patternFeatures[styleId] = L.polylineDecorator(data.features[styleId])
+          data.patternFeatures[styleId].addTo(this.layer.map)
         }
 
-        data.patternFeatures[k].setPatterns(patterns)
+        data.patternFeatures[styleId].setPatterns(patterns)
 
-        if (this.layer._shallBindPopupToStyle(k)) {
-          data.patternFeatures[k].bindPopup(data.popup)
+        if (this.layer._shallBindPopupToStyle(styleId)) {
+          data.patternFeatures[styleId].bindPopup(data.popup)
         }
-      } else {
-        if (data.patternFeatures[k]) {
-          this.layer.map.removeLayer(data.patternFeatures[k])
-          delete data.patternFeatures[k]
-        }
-      }
-    }
+      })
+//    else {
+//        if (data.patternFeatures[k]) {
+//          this.layer.map.removeLayer(data.patternFeatures[k])
+//          delete data.patternFeatures[k]
+//        }
+//      }
+//    })
   }
 
   removeObject (object, data) {
