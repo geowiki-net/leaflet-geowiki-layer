@@ -4,7 +4,8 @@ require('./OverpassLayer.css')
 const ee = require('event-emitter')
 const BoundingBox = require('boundingbox')
 const twig = require('twig')
-const OverpassFrontend = require('overpass-frontend')
+const OverpassFrontend = require('overpass-frontend/src/defines')
+OverpassFrontend.Filter = require('overpass-frontend/src/Filter')
 const escapeHtml = require('html-escape')
 const turf = {
   intersect: require('@turf/intersect').default
