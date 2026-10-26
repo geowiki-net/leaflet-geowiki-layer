@@ -48,6 +48,7 @@ class OverpassLayer {
 
     compileFeature(this.options.feature, twig, { autoescape: true })
     compileFeature(this.options.layouts, twig, { autoescape: false })
+    this.options.query = compileFeature(this.options.query, twig, { autoescape: false })
 
     this.currentRequest = null
     this.lastZoom = null
@@ -243,6 +244,11 @@ class OverpassLayer {
     let query = this.options.query
     if (typeof query === 'object') {
       query = query[Object.keys(query).filter(function (x) { return x <= this.map.getZoom() }.bind(this)).reverse()[0]]
+    }
+
+    if (typeof query === 'function') {
+      this.calcGlobalTwigData()
+      query = query(this.globalTwigData)
     }
 
     if (query !== this.lastQuery) {
