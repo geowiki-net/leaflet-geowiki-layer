@@ -5,6 +5,14 @@ function compileFeature (feature, twig, options = {}) {
     options.autoescape = true
   }
 
+  if (typeof feature === 'string') {
+    if (feature.search('{') !== -1) {
+      feature = compileTemplate(feature, twig, options)
+    }
+
+    return feature
+  }
+
   for (const k in feature) {
     if (typeof feature[k] === 'string' && feature[k].search('{') !== -1) {
       feature[k] = compileTemplate(feature[k], twig, options)
